@@ -1,101 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>One Year With You 💖</title>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Montserrat', sans-serif;
       color: white;
       background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-      overflow-x: hidden;
       min-height: 100vh;
       text-align: center;
-      padding-bottom: 80px;
+      padding: 20px;
+      overflow-x: hidden;
     }
-    h1 {
-      font-family: 'Great Vibes', cursive;
-      font-size: 3rem;
-      margin: 30px 0;
-      color: #ffccff;
-    }
-    .stars-container {
+    
+    /* Stars Background */
+    .stars {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none;
-      z-index: 0;
+      z-index: -1;
       overflow: hidden;
     }
     .star {
       position: absolute;
       background-color: white;
       border-radius: 50%;
-      animation: twinkle var(--duration) ease-in-out infinite;
+      animation: twinkle var(--duration) infinite ease-in-out;
+      opacity: 0;
     }
     @keyframes twinkle {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 1; }
+      0%, 100% { opacity: 0.1; transform: scale(0.8); }
+      50% { opacity: var(--opacity); transform: scale(1); }
     }
+
+    /* Shooting Stars */
+    .shooting-star-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    
     .shooting-star {
       position: absolute;
       width: 150px;
-      height: 3px;
-      background: linear-gradient(90deg, rgba(255,255,255,0), white);
-      transform: rotate(var(--angle));
-      animation: shoot var(--speed) linear;
-      opacity: 0;
+      height: 2px;
+      transform-origin: left center;
+      animation: shoot var(--duration) linear forwards;
     }
+    
+    .shooting-star-dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: white;
+      filter: blur(1px) drop-shadow(0 0 8px white);
+      transform: translate(-50%, -50%);
+      animation: dotFade var(--duration) linear forwards;
+    }
+    
+    .shooting-star-tail {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, 
+                rgba(255,255,255,1) 0%,
+                rgba(255,255,255,0.8) 40%, 
+                rgba(255,255,255,0) 100%);
+      border-radius: 50%;
+      filter: blur(1px);
+      animation: tailFade var(--duration) linear forwards;
+    }
+    
     @keyframes shoot {
-      0% {
-        transform: translateX(0) translateY(0) rotate(var(--angle));
-        opacity: 1;
+      0% { 
+        transform: translateX(var(--start-x)) translateY(var(--start-y)) rotate(var(--angle));
       }
-      100% {
+      100% { 
         transform: translateX(var(--end-x)) translateY(var(--end-y)) rotate(var(--angle));
-        opacity: 0;
       }
     }
-    .slideshow {
+    
+    @keyframes dotFade {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      5% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      20% { opacity: 1; transform: translate(-50%, -50%) scale(0.8); }
+      80% { opacity: 0.5; }
+      100% { opacity: 0; }
+    }
+    
+    @keyframes tailFade {
+      0% { opacity: 0; width: 0; }
+      10% { opacity: 1; width: 100%; }
+      90% { opacity: 0.5; }
+      100% { opacity: 0; }
+    }
+
+    /* Opening Message */
+    #openingMessage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
       max-width: 800px;
       margin: 0 auto;
+    }
+    .opening-text {
+      font-size: 1.5rem;
+      line-height: 1.6;
       margin-bottom: 40px;
-      position: relative;
-      z-index: 2;
+      color: #ffccff;
+    }
+    .opening-text h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #ff66b3;
+    }
+    .continue-btn {
+      padding: 12px 30px;
+      font-size: 1.2rem;
+      background: #ff66b3;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      margin-top: 30px;
+    }
+    .continue-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(255, 102, 179, 0.4);
+    }
+    
+    /* Timer */
+    .timer-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+    }
+    .timer {
+      font-size: 3rem;
+      color: #ffccff;
+      margin-bottom: 20px;
+    }
+    .timer-message {
+      font-size: 1.5rem;
+      color: #ffccff;
+    }
+    
+    /* Slideshow */
+    .slideshow {
+      max-width: 800px;
+      margin: 20px auto;
       display: none;
     }
     .slideshow img {
       width: 100%;
-      height: auto;
+      max-height: 500px;
+      object-fit: contain;
       border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-      margin-bottom: 10px;
       display: none;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     }
     .slideshow img.active {
       display: block;
-      animation: none !important; /* Prevent any automatic sliding */
+      animation: fadeIn 1s;
     }
+    
+    /* Captions */
     .caption {
       font-size: 1.2rem;
-      margin-bottom: 30px;
+      margin: 20px 0;
       color: #ffccff;
       min-height: 60px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      animation: fadeIn 1s forwards;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    
+    /* Buttons */
     .nav-buttons {
       display: flex;
       justify-content: center;
@@ -116,20 +208,30 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(255, 204, 255, 0.3);
     }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* Final scene */
     #finalScene {
       display: none;
       flex-direction: column;
       align-items: center;
-      margin-top: 50px;
+      justify-content: center;
+      min-height: 100vh;
       position: relative;
-      z-index: 2;
+      overflow: hidden;
     }
+    
+    /* Stickman animation */
     .stick-scene {
       position: relative;
       width: 100%;
       max-width: 400px;
-      height: 250px;
+      height: 300px;
       margin: auto;
+      z-index: 2;
     }
     .girl, .boy {
       position: absolute;
@@ -193,16 +295,25 @@
     .legs::before { left: 0; transform: rotate(20deg); top: 30px; }
     .legs::after { right: 0; transform: rotate(-20deg); top: 30px; }
     .girl {
-      left: 240px;
-      animation: jump 1s 6s forwards, moveClose 2s 9s forwards, hug 2s 11s forwards;
+      left: 200px;
+      opacity: 0;
+      animation: fadeInGirl 1s 1s forwards, girlBlush 1s 3s infinite alternate;
     }
     .boy {
       left: -80px;
-      animation: boyWalk 3s forwards, kneel 2s 3s forwards, standUp 1s 8s forwards, liftHand 1s 9s forwards, moveClose 2s 10s forwards, hug 2s 12s forwards;
+      opacity: 0;
+      animation: fadeInBoy 1s 2s forwards, boyWalk 3s 2s forwards, kneel 2s 5s forwards, 
+                liftHand 1s 7s forwards, moveClose 2s 9s forwards, hug 2s 11s forwards;
+    }
+    @keyframes fadeInGirl {
+      to { opacity: 1; }
+    }
+    @keyframes fadeInBoy {
+      to { opacity: 1; }
     }
     @keyframes boyWalk {
       0% { left: -80px; }
-      100% { left: 170px; }
+      100% { left: 120px; }
     }
     @keyframes kneel {
       0% { 
@@ -219,168 +330,157 @@
         height: 120px;
       }
     }
-    @keyframes standUp {
-      0% { 
-        transform: rotate(20deg) translateY(20px); 
-        top: 20px;
-        height: 120px;
-      }
-      100% { 
-        transform: rotate(0deg) translateY(0); 
-        top: 0;
-        height: 140px;
-      }
+    @keyframes girlBlush {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
     @keyframes liftHand {
-      0% { transform: rotate(0deg); }
-      50% { transform: rotate(-20deg); }
-      100% { transform: rotate(0deg); }
-    }
-    @keyframes jump {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-      100% { transform: translateY(0); }
+      0% { transform: rotate(20deg) translateY(20px); }
+      50% { transform: rotate(10deg) translateY(15px); }
+      100% { transform: rotate(20deg) translateY(20px); }
     }
     @keyframes moveClose {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-30px); }
+      0% { transform: translateX(0) rotate(20deg) translateY(20px); }
+      100% { transform: translateX(30px) rotate(20deg) translateY(20px); }
     }
     @keyframes hug {
-      0% { transform: translateX(-30px); }
+      0% { transform: translateX(30px) rotate(20deg) translateY(20px); }
       50% { 
-        transform: translateX(-35px) translateY(-5px); 
+        transform: translateX(30px) rotate(20deg) translateY(15px); 
       }
-      100% { transform: translateX(-30px); }
+      100% { transform: translateX(30px) rotate(20deg) translateY(20px); }
     }
     .flower {
       position: absolute;
       top: 60px;
-      left: 180px;
+      left: 120px;
       font-size: 30px;
       opacity: 0;
-      animation: flyFlower 1s 5s forwards, holdFlower 1s 6s forwards, hideFlower 1s 11s forwards;
+      animation: showFlower 1s 7s forwards, holdFlower 1s 8s forwards, hideFlower 1s 11s forwards;
     }
-    @keyframes flyFlower {
-      0% { 
-        top: 60px; 
-        left: 180px; 
-        opacity: 0; 
-        transform: rotate(0deg);
-      }
-      50% {
-        transform: rotate(180deg);
-      }
-      100% { 
-        top: 60px; 
-        left: 250px; 
-        opacity: 1; 
-        transform: rotate(360deg);
-      }
+    @keyframes showFlower {
+      to { opacity: 1; }
     }
     @keyframes holdFlower {
       100% { 
         top: 40px;
-        left: 260px;
+        left: 180px;
       }
     }
     @keyframes hideFlower {
       100% { opacity: 0; }
     }
-    .final-caption {
-      font-size: 1.5rem;
+    .final-message {
+      font-size: 1.8rem;
       color: #ffccff;
-      margin-top: 20px;
+      margin-top: 40px;
       opacity: 0;
-      animation: finalText 1s 14s forwards;
+      animation: finalText 1s 13s forwards;
+      z-index: 2;
+      max-width: 800px;
+      line-height: 1.6;
+    }
+    .final-message h2 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #ff66b3;
     }
     @keyframes finalText {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .heart {
+    
+    /* Fireworks */
+    .firework {
       position: absolute;
-      font-size: 20px;
-      color: #ff6b6b;
-      animation: floatUp 4s linear forwards;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px 2px;
+      animation: explode 1s forwards;
       opacity: 0;
     }
-    @keyframes floatUp {
+    @keyframes explode {
       0% {
-        transform: translateY(0) rotate(0deg);
+        transform: translate(0, 0) scale(1);
         opacity: 1;
       }
       100% {
-        transform: translateY(-100px) rotate(20deg);
+        transform: translate(var(--tx), var(--ty)) scale(0.5);
+        opacity: 0;
+        box-shadow: 0 0 5px 1px;
+      }
+    }
+    .firework-particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      animation: particle 1s forwards;
+      opacity: 0;
+    }
+    @keyframes particle {
+      0% {
+        transform: translate(0, 0);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--tx), var(--ty));
         opacity: 0;
       }
     }
-    .welcome-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 70vh;
-      text-align: center;
-    }
-    .welcome-message {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background: rgba(255, 204, 255, 0.1);
-      border-radius: 10px;
-      margin-bottom: 30px;
-      animation: fadeIn 2s;
-    }
+    
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-    .welcome-slide {
-      display: none;
-    }
-    .welcome-slide.active {
-      display: block;
-    }
   </style>
 </head>
 <body>
-  <div class="stars-container" id="starsContainer"></div>
+  <!-- Stars Background -->
+  <div class="stars" id="stars"></div>
   
-  <div class="welcome-container" id="welcomeContainer">
-    <div class="welcome-message welcome-slide active">
-      <h2>Welcome to Our Special Page</h2>
-      <p>Since we can't meet right now, I made this digital gift for you...</p>
-      <p>I wish I could give you something physical, but this comes from my heart ❤️</p>
+  <!-- Opening Message -->
+  <div id="openingMessage">
+    <div class="opening-text">
+      <h1>One Year With You 💖</h1>
+      <p>It's been a year since you said "Yes" to me, and every moment since then has been magical.</p>
+      <p>I wish I could be there with you today to celebrate this special anniversary, but since we're far apart, I wanted to create something special for you.</p>
+      <p>This is my first time making something like this, so it might not be perfect, but I put all my love into it.</p>
+      <p>Let's take a journey through some of our beautiful memories together...</p>
     </div>
-    <div class="welcome-message welcome-slide">
-      <h2>Made With Love</h2>
-      <p>I learned to code this website just for you</p>
-      <p>It's not perfect, but it's my way of showing how much you mean to me</p>
-    </div>
-    <div class="welcome-message welcome-slide">
-      <h2>Our First Year Together</h2>
-      <p>Celebrating 12 amazing months with you!</p>
-      <p>Every moment with you is precious to me 💖</p>
-    </div>
+    <button class="continue-btn" id="continueBtn">Let's Begin</button>
   </div>
   
-  <div id="slideshow" class="slideshow" style="display:none;">
-    <img id="slideImage1" src="img1.jpg" alt="Our first photo">
-    <img id="slideImage2" src="img2.jpg" alt="Beautiful smile">
-    <img id="slideImage3" src="img3.jpg" alt="Special moment">
-    <img id="slideImage4" src="img4.jpg" alt="Sweet dreams">
-    <img id="slideImage5" src="img5.jpg" alt="Fun times">
-    <img id="slideImage6" src="img6.jpg" alt="First date">
-    <img id="slideImage7" src="img7.jpg" alt="Photo struggle">
-    <img id="slideImage8" src="img8.jpg" alt="Perfect photo">
-    <img id="slideImage9" src="img9.jpg" alt="Meaningful moment">
+  <!-- Timer Screen -->
+  <div class="timer-container" id="timerContainer">
+    <div class="timer" id="timer">01:00</div>
+    <div class="timer-message">Countdown to our special moment...</div>
+  </div>
+  
+  <!-- Photo Slideshow -->
+  <div id="slideshow" class="slideshow">
+    <img id="slide1" src="img1.jpg" alt="Our first photo">
+    <img id="slide2" src="img2.jpg" alt="Beautiful smile">
+    <img id="slide3" src="img3.jpg" alt="Special moment">
+    <img id="slide4" src="img4.jpg" alt="Sweet dreams">
+    <img id="slide5" src="img5.jpg" alt="Fun times">
+    <img id="slide6" src="img6.jpg" alt="First date">
+    <img id="slide7" src="img7.jpg" alt="Photo struggle">
+    <img id="slide8" src="img8.jpg" alt="Perfect photo">
+    <img id="slide9" src="img9.jpg" alt="Meaningful moment">
+    
     <div class="caption" id="slideCaption"></div>
+    
     <div class="nav-buttons">
-      <button onclick="prevSlide()">Previous</button>
-      <button onclick="nextSlide()">Next</button>
+      <button id="prevBtn">Previous</button>
+      <button id="nextBtn">Next</button>
     </div>
   </div>
 
+  <!-- Final Scene with Stickman Animation -->
   <div id="finalScene">
     <div class="stick-scene">
       <div class="girl">
@@ -397,180 +497,319 @@
       </div>
       <div class="flower">🌸</div>
     </div>
-    <div class="final-caption">Forever Yours 💖</div>
+    <div class="final-message">
+      <h2>Happy Anniversary My Love</h2>
+      <p>Even though we're apart today, know that my heart is always with you.</p>
+      <p>Thank you for an amazing year full of love, laughter, and beautiful memories.</p>
+      <p>I can't wait to create many more with you. I love you more than words can say. 💖</p>
+    </div>
   </div>
 
   <script>
-    // Create twinkling stars
+    // DOM Elements
+    const continueBtn = document.getElementById('continueBtn');
+    const timerContainer = document.getElementById('timerContainer');
+    const slideshow = document.getElementById('slideshow');
+    const finalScene = document.getElementById('finalScene');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      createStars();
+      setupEventListeners();
+    });
+
+    // Create stars and shooting stars
     function createStars() {
-      const container = document.getElementById('starsContainer');
-      const starCount = 200;
+      const starsContainer = document.getElementById('stars');
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
       
-      for (let i = 0; i < starCount; i++) {
+      // Clear existing stars
+      starsContainer.innerHTML = '';
+      
+      // Create twinkling stars with varying brightness and sizes
+      for (let i = 0; i < 300; i++) {
         const star = document.createElement('div');
         star.className = 'star';
         
-        const x = Math.random() * 100;
-        const y = Math.random() * 100;
-        const size = Math.random() * 3 + 2;
-        const duration = Math.random() * 3 + 2;
-        
-        star.style.left = `${x}%`;
-        star.style.top = `${y}%`;
+        // Random size between 1px and 4px
+        const size = Math.random() * 3 + 1;
         star.style.width = `${size}px`;
         star.style.height = `${size}px`;
-        star.style.setProperty('--duration', `${duration}s`);
-        star.style.animationDelay = `${Math.random() * 5}s`;
         
-        container.appendChild(star);
+        // Random position
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        // Random twinkle duration and opacity
+        const duration = 3 + Math.random() * 12;
+        const opacity = 0.3 + Math.random() * 0.7;
+        
+        star.style.setProperty('--duration', `${duration}s`);
+        star.style.setProperty('--opacity', opacity);
+        
+        starsContainer.appendChild(star);
       }
-    }
-    
-    // Create shooting stars
-    function createShootingStar() {
-      const container = document.getElementById('starsContainer');
-      const shootingStar = document.createElement('div');
-      shootingStar.className = 'shooting-star';
       
-      const angle = Math.random() * 90 - 45;
-      const speed = Math.random() * 3 + 2;
-      const startX = Math.random() * 100;
-      const startY = Math.random() * 20;
-      const distance = 150;
-      const endX = startX + distance * Math.cos(angle * Math.PI / 180);
-      const endY = startY + distance * Math.sin(angle * Math.PI / 180);
-      
-      shootingStar.style.left = `${startX}%`;
-      shootingStar.style.top = `${startY}%`;
-      shootingStar.style.setProperty('--angle', `${angle}deg`);
-      shootingStar.style.setProperty('--speed', `${speed}s`);
-      shootingStar.style.setProperty('--end-x', `${endX - startX}px`);
-      shootingStar.style.setProperty('--end-y', `${endY - startY}px`);
-      
-      container.appendChild(shootingStar);
-      setTimeout(() => shootingStar.remove(), speed * 1000);
-    }
-    
-    function startShootingStars() {
-      createShootingStar();
-      setTimeout(startShootingStars, Math.random() * 3000 + 2000);
-    }
-    
-    // Create floating hearts
-    function createHearts() {
-      const container = document.getElementById('finalScene');
-      if (!container || container.style.display !== 'flex') return;
-      
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      heart.innerHTML = '❤️';
-      
-      heart.style.left = `${Math.random() * 100}%`;
-      heart.style.bottom = '0';
-      heart.style.animationDuration = `${Math.random() * 3 + 3}s`;
-      
-      container.appendChild(heart);
-      setTimeout(() => heart.remove(), parseFloat(heart.style.animationDuration) * 1000);
-    }
-    
-    function startHearts() {
-      createHearts();
-      setTimeout(startHearts, 800);
-    }
-    
-    // Welcome slideshow
-    let currentWelcomeSlide = 0;
-    const welcomeSlides = document.querySelectorAll('.welcome-slide');
-    
-    function showWelcomeSlide(index) {
-      welcomeSlides.forEach((slide, i) => {
-        slide.classList.toggle('active', i === index);
-      });
-    }
-    
-    function nextWelcomeSlide() {
-      currentWelcomeSlide = (currentWelcomeSlide + 1) % welcomeSlides.length;
-      showWelcomeSlide(currentWelcomeSlide);
-      
-      if (currentWelcomeSlide === welcomeSlides.length - 1) {
+      // Create realistic shooting stars
+      function createShootingStar() {
+        const container = document.createElement('div');
+        container.className = 'shooting-star-container';
+        
+        const shootingStar = document.createElement('div');
+        shootingStar.className = 'shooting-star';
+        
+        const dot = document.createElement('div');
+        dot.className = 'shooting-star-dot';
+        
+        const tail = document.createElement('div');
+        tail.className = 'shooting-star-tail';
+        
+        shootingStar.appendChild(dot);
+        shootingStar.appendChild(tail);
+        container.appendChild(shootingStar);
+        starsContainer.appendChild(container);
+        
+        // Random start position (from any edge)
+        const edge = Math.floor(Math.random() * 4);
+        let startX, startY;
+        
+        if (edge === 0) { // Top
+          startX = Math.random() * screenWidth;
+          startY = 0;
+        } else if (edge === 1) { // Right
+          startX = screenWidth;
+          startY = Math.random() * screenHeight;
+        } else if (edge === 2) { // Bottom
+          startX = Math.random() * screenWidth;
+          startY = screenHeight;
+        } else { // Left
+          startX = 0;
+          startY = Math.random() * screenHeight;
+        }
+        
+        // Random angle pointing inward (forward direction)
+        let angle;
+        if (edge === 0) { // From top
+          angle = 180 + (Math.random() * 60 - 30); // 150-210 degrees
+        } else if (edge === 1) { // From right
+          angle = 270 + (Math.random() * 60 - 30); // 240-300 degrees
+        } else if (edge === 2) { // From bottom
+          angle = 0 + (Math.random() * 60 - 30); // -30 to 30 degrees
+        } else { // From left
+          angle = 90 + (Math.random() * 60 - 30); // 60-120 degrees
+        }
+        
+        // Calculate end position
+        const distance = Math.max(screenWidth, screenHeight) * 1.5;
+        const endX = startX + Math.cos(angle * Math.PI / 180) * distance;
+        const endY = startY + Math.sin(angle * Math.PI / 180) * distance;
+        
+        // Set animation properties
+        const duration = 2 + Math.random() * 2; // 2-4 seconds
+        
+        shootingStar.style.setProperty('--angle', `${angle}deg`);
+        shootingStar.style.setProperty('--start-x', `${startX}px`);
+        shootingStar.style.setProperty('--start-y', `${startY}px`);
+        shootingStar.style.setProperty('--end-x', `${endX}px`);
+        shootingStar.style.setProperty('--end-y', `${endY}px`);
+        shootingStar.style.setProperty('--duration', `${duration}s`);
+        dot.style.setProperty('--duration', `${duration}s`);
+        tail.style.setProperty('--duration', `${duration}s`);
+        
+        // Remove after animation completes
         setTimeout(() => {
-          document.getElementById('welcomeContainer').style.display = 'none';
-          document.getElementById('slideshow').style.display = 'block';
-          showSlide(0);
-        }, 3000);
-      }
-    }
-    
-    // Main slideshow functionality
-    const slides = [
-      { img: 'img1.jpg', caption: 'Scene mirror selfie✨' },
-      { img: 'img2.jpg', caption: 'Surprised to see the girl that annoyed the most clicked a good pic lol' },
-      { img: 'img3.jpg', caption: 'Ahh that sexy smile 🤠' },
-      { img: 'img4.jpg', caption: 'Ik you fell asleep thinking about us and you were dreaming about me(ellam enik ariyam :>)' },
-      { img: 'img5.jpg', caption: 'Moments before having fun (and disaster) 😝❤️' },
-      { img: 'img6.jpg', caption: 'First date (technically) 🎉' },
-      { img: 'img7.jpg', caption: 'The struggle to take a pic' },
-      { img: 'img8.jpg', caption: 'The only proper photo we have lol' },
-      { img: 'img9.jpg', caption: 'This meant a lot💍' }
-    ];
-
-    let currentSlide = 0;
-
-    function showSlide(index) {
-      if (index >= slides.length) {
-        document.getElementById('slideshow').style.display = 'none';
-        document.getElementById('finalScene').style.display = 'flex';
-        startHearts();
-        return;
+          container.remove();
+        }, duration * 1000);
       }
       
-      if (index < 0) index = 0;
-      currentSlide = index;
+      // Create initial shooting stars
+      for (let i = 0; i < 3; i++) {
+        setTimeout(createShootingStar, i * 1000);
+      }
       
-      // Hide all images
-      document.querySelectorAll('.slideshow img').forEach(img => {
-        img.classList.remove('active');
-      });
-      
-      // Show current image
-      document.getElementById(`slideImage${index + 1}`).classList.add('active');
-      
-      // Update caption with fade animation
-      const captionElement = document.getElementById('slideCaption');
-      captionElement.style.animation = 'none';
-      captionElement.offsetHeight; // Trigger reflow to reset animation
-      captionElement.textContent = slides[index].caption;
-      captionElement.style.animation = 'fadeIn 1s forwards';
+      // Create shooting stars every 3 seconds
+      setInterval(createShootingStar, 3000);
     }
 
-    function nextSlide() {
-      showSlide(currentSlide + 1);
-    }
-
-    function prevSlide() {
-      if (currentSlide > 0) showSlide(currentSlide - 1);
-    }
-
-    // Initialize
-    window.onload = function() {
-      createStars();
-      startShootingStars();
-      
-      // Start welcome slideshow
-      setInterval(nextWelcomeSlide, 3000);
-      
-      // Preload all images
-      slides.forEach(slide => {
-        const img = new Image();
-        img.src = slide.img;
-      });
+    // Setup event listeners
+    function setupEventListeners() {
+      continueBtn.addEventListener('click', startCountdown);
+      prevBtn.addEventListener('click', prevSlide);
+      nextBtn.addEventListener('click', nextSlide);
       
       // Keyboard navigation
-      document.addEventListener('keydown', (e) => {
+      document.addEventListener('keydown', function(e) {
         if (e.key === 'ArrowLeft') prevSlide();
         if (e.key === 'ArrowRight') nextSlide();
       });
-    };
+      
+      // Window resize
+      window.addEventListener('resize', createStars);
+    }
+
+    // Timer functionality
+    let timeLeft = 60;
+    let timerInterval;
+    
+    function startCountdown() {
+      document.getElementById('openingMessage').style.display = 'none';
+      timerContainer.style.display = 'flex';
+      updateTimerDisplay();
+      
+      timerInterval = setInterval(function() {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          startSlideshow();
+        }
+      }, 1000);
+    }
+    
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById('timer').textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    // Slideshow functions
+    let currentSlide = 0;
+    const captions = [
+      "Scene mirror selfie✨",
+      "Surprised to see the girl that annoyed the most clicked a good pic lol",
+      "Ahh that sexy smile 🤠",
+      "Ik you fell asleep thinking about us and you were dreaming about me(ellam enik ariyam :>)",
+      "Moments before having fun (and disaster) 😝❤️",
+      "First date (technically) 🎉",
+      "The struggle to take a pic",
+      "The only proper photo we have lol",
+      "This meant a lot💍"
+    ];
+    
+    function startSlideshow() {
+      timerContainer.style.display = 'none';
+      slideshow.style.display = 'block';
+      showSlide(0);
+    }
+    
+    function showFinalScene() {
+      slideshow.style.display = 'none';
+      finalScene.style.display = 'flex';
+      setTimeout(startFireworks, 11000);
+    }
+    
+    function showSlide(index) {
+      const slides = document.querySelectorAll('#slideshow img');
+      const captionElement = document.getElementById('slideCaption');
+      
+      // Hide all slides
+      slides.forEach(slide => slide.classList.remove('active'));
+      
+      // Show current slide
+      slides[index].classList.add('active');
+      captionElement.textContent = captions[index];
+      
+      // Update button states
+      prevBtn.disabled = index === 0;
+      nextBtn.textContent = index === 8 ? "See the Surprise!" : "Next";
+      
+      currentSlide = index;
+    }
+    
+    function nextSlide() {
+      if (currentSlide < 8) {
+        showSlide(currentSlide + 1);
+      } else {
+        showFinalScene();
+      }
+    }
+    
+    function prevSlide() {
+      if (currentSlide > 0) {
+        showSlide(currentSlide - 1);
+      }
+    }
+    
+    // Fireworks
+    function createFirework(x, y) {
+      const colors = ['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff'];
+      const container = document.getElementById('finalScene');
+      
+      // Create main firework
+      const mainFirework = document.createElement('div');
+      mainFirework.className = 'firework';
+      mainFirework.style.left = `${x}px`;
+      mainFirework.style.top = `${y}px`;
+      mainFirework.style.boxShadow = `0 0 10px 2px ${colors[Math.floor(Math.random() * colors.length)]}`;
+      container.appendChild(mainFirework);
+      
+      // Create particles
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'firework-particle';
+        
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * 100 + 50;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance;
+        const duration = Math.random() * 1 + 0.5;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        particle.style.backgroundColor = color;
+        particle.style.boxShadow = `0 0 5px 1px ${color}`;
+        particle.style.setProperty('--tx', `${tx}px`);
+        particle.style.setProperty('--ty', `${ty}px`);
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `${Math.random() * 0.2}s`;
+        
+        container.appendChild(particle);
+        setTimeout(() => {
+          mainFirework.remove();
+          particle.remove();
+        }, duration * 1000);
+      }
+    }
+    
+    function startFireworks() {
+      const container = document.getElementById('finalScene');
+      if (!container || container.style.display !== 'flex') return;
+      
+      // Initial burst
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+          const x = Math.random() * window.innerWidth;
+          const y = Math.random() * window.innerHeight / 2;
+          createFirework(x, y);
+        }, i * 300);
+      }
+      
+      // Continuous fireworks
+      const fireworkInterval = setInterval(() => {
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight / 2;
+        createFirework(x, y);
+        
+        if (Math.random() > 0.7) {
+          for (let i = 0; i < 3; i++) {
+            setTimeout(() => {
+              const offsetX = (Math.random() - 0.5) * 100;
+              const offsetY = (Math.random() - 0.5) * 100;
+              createFirework(x + offsetX, y + offsetY);
+            }, i * 200);
+          }
+        }
+      }, 800);
+      
+      setTimeout(() => {
+        clearInterval(fireworkInterval);
+      }, 30000);
+    }
   </script>
 </body>
 </html>
